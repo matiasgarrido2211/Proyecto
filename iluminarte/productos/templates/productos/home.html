@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Listado de Productos</h1>
+<a href="{% url 'agregar_producto' %}" class="btn-agregar">➕ Agregar producto</a>
+
+<table>
+    <thead>
+        <tr>
+            <th>Código</th>
+            <th>Imagen</th>
+            <th>Nombre</th>
+            <th>Precio Venta</th>
+            <th>Costo</th>
+            <th>Stock</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for p in productos %}
+        <tr>
+            <td>{{ p.codigo }}</td>
+            <td>
+                {% if p.foto %}
+                    <img src="{{ p.foto.url }}" alt="foto">
+                {% else %}
+                    Sin foto
+                {% endif %}
+            </td>
+            <td>{{ p.nombre }}</td>
+            <td>${{ p.precio_venta }}</td>
+            <td>${{ p.costo }}</td>
+            <td>{{ p.stock }}</td>
+            <td>
+                {% if p.stock > 0 %}
+                    <span class="estado-activo">Activo</span>
+                {% else %}
+                    <span class="estado-inactivo">Inactivo</span>
+                {% endif %}
+            </td>
+            <td>
+                <a class="btn btn-modificar" href="{% url 'modificar_producto' p.id %}">modificar</a>
+                <form action="{% url 'eliminar_producto' p.id %}" method="post" style="display:inline;" onsubmit="return confirm('¿Eliminar {{ p.nombre }}?');">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-eliminar">eliminar</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

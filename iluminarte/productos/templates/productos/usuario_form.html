@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+
+  <h1>{{ titulo }}</h1>
+
+  <form method="post">
+    {% csrf_token %}
+
+    <!--Campos que vengan del form-->
+    {% for field in form %}
+      <label>{{ field.label }}</label>
+      {{ field }}
+      {% if field.errors %}
+        <div class="error">{{ field.errors|striptags }}</div>
+      {% endif %}
+    {% endfor %}
+
+    <!--En creación, agregamos manualmente los campos extra-->
+    {% if es_creacion %}
+      <label>Nombre</label>
+      <input type="text" name="first_name">
+
+      <label>Apellido</label>
+      <input type="text" name="last_name">
+
+      <label>Email</label>
+      <input type="email" name="email">
+
+      <label><input type="checkbox" name="is_staff"> ¿Staff?</label>
+      <label><input type="checkbox" name="is_active" checked> ¿Activo?</label>
+    {% endif %}
+
+    <button type="submit">Guardar</button>
+  </form>
+
+{% endblock %}

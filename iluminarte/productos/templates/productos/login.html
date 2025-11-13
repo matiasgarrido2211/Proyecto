@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Inicio de Sesión</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'productos/style.css' %}">
+</head>
+<body class="login-body">
+  <div class="login-box">
+    <img src="{% static 'productos/logo.png' %}" alt="Logo de Iluminarte" class="login-logo">
+
+    <h1>Iniciar Sesión</h1>
+    
+    <form method="POST">
+      {% csrf_token %}
+      <input type="text" name="username" placeholder="Usuario" required>
+      <input type="password" name="password" placeholder="Contraseña" required>
+      <button type="submit">Ingresar</button>
+    </form>
+
+    {% if messages %}
+      <div id="message-container">
+        {% for message in messages %}
+          {% if 'auth' in message.tags %}
+            <p class="{% if message.level_tag == 'error' %}error{% else %}success-msg{% endif %}">
+              {{ message }}
+            </p>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <p class="login-footer">Sistema de gestión Iluminarte © 2025</p>
+  </div>
+
+
+  <!---mensaje de sesion cerrada--->
+  <script>
+    setTimeout(() => {
+      const msg = document.getElementById('message-container');
+      if (msg) {
+        msg.style.transition = "opacity 0.2s ease";
+        msg.style.opacity = "0";
+        setTimeout(() => msg.remove(), 500);
+      }
+    }, 3000);
+  </script>
+</body>
+</html>

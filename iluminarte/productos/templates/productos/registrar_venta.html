@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% block content %}
+
+  <h2>Registrar Venta</h2>
+  <a href="{% url 'listar_ventas' %}" class="btn-morado">← Volver al listado</a>
+
+  <form method="POST">
+    {% csrf_token %}
+    <div class="card">
+      <h3>Detalles de la venta</h3>
+      <table id="tablaVenta"> 
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio Unitario</th>
+            <th>Subtotal</th>
+            <th>Eliminar</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="detalleVenta">
+          <tr>
+            <td>
+              <select name="producto_1" class="productoSelect" onchange="actualizarPrecio(this)" required>
+                <option value="">Seleccione un producto</option>
+                {% for p in productos %}
+                  <option value="{{ p.id }}" data-precio="{{ p.precio_venta }}" data-stock="{{ p.stock }}">{{ p.nombre }} (Stock: {{ p.stock }})</option>
+                {% endfor %}
+              </select>
+            </td>
+            <td><input type="number" name="cantidad_1" value="1" min="1" onchange="actualizarTotales()" required></td>
+            <td class="precio">0</td>
+            <td class="subtotal">0</td>
+            <td><button type="button" onclick="eliminarFila(this)">🗑️</button></td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+
+      <button type="button" class="btn btn-agregar" onclick="agregarFila()">+ Agregar producto</button>
+
+      <div class="totales">
+        <h3>Total: $<span id="totalVenta">0</span></h3>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-agregar">Registrar venta</button>
+  </form>
+
+<!--validaciones varias-->
+<script>
+    let contador = 1;
+
+    function actualizarPrecio(select) {
+    const fila = select.closest('tr');
+    const precio = select.options[select.selectedIndex].dataset.precio || 0;
+    fila.querySelector('.precio').textContent = precio;
+    actualizarTotales();
+    }
+
+    function actualizarTotales() {
+    let total = 0;
+    document.querySelectorAll('#detalleVenta tr').forEach(fila => {
+        const cantidad = parseFloat(fila.querySelector('input').value) || 0;
+        const precio = parseFloat(fila.querySelector('.precio').textContent) || 0;
+        const subtotal = cantidad * precio;
+        fila.querySelector('.subtotal').textContent = subtotal.toFixed(2);
+        total += subtotal;
+    });
+    document.getElementById('totalVenta').textContent = total.toFixed(2);
+    }
+
+    function agregarFila() {
+    contador++;
+    const tbody = document.getElementById('detalleVenta');
+    const filaNueva = tbody.rows[0].cloneNode(true);
+    filaNueva.querySelector('select').name = `producto_${contador}`;
+    filaNueva.querySelector('input').name = `cantidad_${contador}`;
+    filaNueva.querySelector('.precio').textContent = '0';
+    filaNueva.querySelector('.subtotal').textContent = '0';
+    tbody.appendChild(filaNueva);
+    }
+
+    function eliminarFila(btn) {
+    const filas = document.querySelectorAll('#detalleVenta tr');
+    if (filas.length > 1) btn.closest('tr').remove();
+    actualizarTotales();
+    }
+    
+    function actualizarTotales() {
+    let total = 0;
+    document.querySelectorAll('#detalleVenta tr').forEach(fila => {
+        const select = fila.querySelector('select');
+        const cantidadInput = fila.querySelector('input[type="number"]');
+        const precio = parseFloat(fila.querySelector('.precio').textContent) || 0;
+        const cantidad = parseFloat(cantidadInput.value) || 0;
+        const stock = parseFloat(select.selectedOptions[0]?.dataset.stock || 0);
+
+        if (cantidad > stock) {
+        cantidadInput.value = stock;
+        alert(`⚠️ No puedes vender más de ${stock} unidades de ${select.selectedOptions[0].text}.`);
+        }
+
+        const subtotal = cantidad * precio;
+        fila.querySelector('.subtotal').textContent = subtotal.toFixed(2);
+        total += subtotal;
+    });
+    document.getElementById('totalVenta').textContent = total.toFixed(2);
+    }
+    
+</script>
+{% endblock %}

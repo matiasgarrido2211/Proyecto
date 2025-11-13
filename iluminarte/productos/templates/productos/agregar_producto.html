@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<h1>Agregar nuevo producto</h1>
+
+<div class="form-container">
+
+  <div class="image-preview">
+    <img id="preview" src="{% static 'productos/placeholder.png' %}" alt="Vista previa de la imagen">
+  </div>
+
+
+  <div class="form-fields">
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <label for="codigo">Código:</label>
+      <input type="text" name="codigo" required>
+
+      <label for="nombre">Nombre:</label>
+      <input type="text" name="nombre" required>
+
+      <label for="precio_venta">Precio de venta:</label>
+      <input type="number" step="0.01" name="precio_venta" required>
+
+      <label for="costo">Costo:</label>
+      <input type="number" step="0.01" name="costo" required>
+
+      <label for="stock">Stock:</label>
+      <input type="number" name="stock" required>
+
+      <label for="foto">Imagen:</label>
+      <input type="file" name="foto" id="foto" accept="image/*" onchange="previewImage(event)">
+
+      <button type="submit">Guardar producto</button>
+      <a href="{% url 'productos_list' %}" class="back-link">← Volver al listado</a>
+    </form>
+  </div>
+</div>
+
+<!--muestra la imagen previsualizada-->
+<script>
+  function previewImage(event) {
+    const file = event.target.files[0];
+    const preview = document.getElementById('preview');
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = e => preview.src = e.target.result;
+      reader.readAsDataURL(file);
+    } else {
+      preview.src = "{% static 'productos/placeholder.png' %}";
+    }
+  }
+</script>
+{% endblock %}

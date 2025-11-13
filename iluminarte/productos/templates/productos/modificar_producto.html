@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<h1>Modificar Producto</h1>
+
+<div class="form-container">
+  <div class="image-preview">
+    {% if producto.foto %}
+      <img id="preview" src="{{ producto.foto.url }}" alt="Foto actual del producto">
+    {% else %}
+      <img id="preview" src="{% static 'productos/placeholder.png' %}" alt="Sin imagen">
+    {% endif %}
+  </div>
+
+  <div class="form-fields">
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <label for="codigo">Código:</label>
+      <input type="text" name="codigo" value="{{ producto.codigo }}" required>
+
+      <label for="nombre">Nombre:</label>
+      <input type="text" name="nombre" value="{{ producto.nombre }}" required>
+
+      <label for="precio_venta">Precio de venta:</label>
+      <input type="number" step="0.01" name="precio_venta" value="{{ producto.precio_venta }}" required>
+
+      <label for="costo">Costo:</label>
+      <input type="number" step="0.01" name="costo" value="{{ producto.costo }}" required>
+
+      <label for="stock">Stock:</label>
+      <input type="number" name="stock" value="{{ producto.stock }}" required>
+
+      <label for="foto">Cambiar imagen:</label>
+      <input type="file" name="foto" id="foto" accept="image/*" onchange="previewImage(event)">
+
+      <button type="submit">Actualizar producto</button>
+      <a href="{% url 'productos_list' %}" class="back-link">← Volver al listado</a>
+    </form>
+  </div>
+</div>
+
+<!--lo mismo quee en el agregar producto pero la imagen ingresada es la previsualizada-->
+<script>
+  function previewImage(event) {
+    const file = event.target.files[0];
+    const preview = document.getElementById('preview');
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = e => preview.src = e.target.result;
+      reader.readAsDataURL(file);
+    }
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Panel de Control</h1>
+
+<div class="kpi-grid">
+  <div class="kpi-card">
+    <div class="kpi-title">Inventario neto</div>
+    <div class="kpi-value">${{ inventario_neto }}</div>
+    <div class="kpi-sub">Productos en stock</div>
+  </div>
+
+  <div class="kpi-card">
+    <div class="kpi-title">Ventas {{ year }}</div>
+    <div class="kpi-value">${{ ventas_year_total }}</div>
+    <div class="kpi-sub">Facturas emitidas: {{ facturas_emitidas }}</div>
+  </div>
+
+  <div class="kpi-card">
+    <div class="kpi-title">Productos con bajo stock</div>
+    <div class="kpi-value">{{ bajo_stock|length }}</div>
+    <div class="kpi-sub">≤ 5 unidades</div>
+  </div>
+</div>
+
+<div class="card" style="margin-top: 16px;">
+  <h3>Ventas por mes {{ year }}</h3>
+  <canvas id="ventasChart" style="max-height: 360px;"></canvas>
+</div>
+
+<div class="grid-2" style="margin-top: 16px;">
+  <div class="card">
+    <h3>Últimas ventas</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Vendedor</th>
+          <th>Fecha</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for v in ultimas_ventas %}
+        <tr>
+          <td>{{ v.id }}</td>
+          <td>{{ v.usuario.get_full_name|default:v.usuario.username }}</td>
+          <td>{{ v.fecha|date:"d/m/Y H:i" }}</td>
+          <td>${{ v.total }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4">Sin ventas recientes.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>Top productos vendidos</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Cant.</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for t in top_productos %}
+        <tr>
+          <td>{{ t.producto__nombre }}</td>
+          <td>{{ t.cantidad }}</td>
+          <td>${{ t.total }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="3">Sin datos.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <h3 style="margin-top:14px;">Nuevos productos</h3>
+    <ul style="margin:0; padding-left:18px;">
+      {% for p in nuevos_productos %}
+      <li>{{ p.nombre }}</li>
+      {% empty %}
+      <li>Sin productos.</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+<!--codigo chart.js para el grafico-->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const labels = {{ labels|safe }};
+  const data = {{ data|safe }};
+
+  new Chart(document.getElementById('ventasChart'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Ventas {{ year }}',
+        data,
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+</script>
+{% endblock %}

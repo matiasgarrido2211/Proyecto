@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel de Administración</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'productos/style.css' %}">
+</head>
+<body>
+  <div class="sidebar">
+    <h2>Iluminarte</h2>
+    <a href="{% url 'home' %}">Inicio</a>
+    <a href="{% url 'listar_ventas' %}">Ventas</a>
+    <a href="{% url 'productos_list' %}">Productos</a>
+    <a href="#">Configuración</a>
+
+    {# Usuarios visible solo con permiso de ver usuarios #}
+    {% if perms.auth.view_user %}
+      <a href="{% url 'usuarios_list' %}">Usuarios</a>
+    {% endif %}
+  </div>
+
+  <div class="main-content">
+    <div class="navbar">
+      <span></span>
+      <div class="user-menu">
+        <span class="user-name">{{ request.user.username }}</span>
+        <img src="{% static 'productos/user.png' %}" alt="Usuario" class="user-avatar" id="user-avatar">
+        <div class="dropdown-menu" id="dropdown-menu">
+          <p><strong>{{ request.user.username }}</strong></p>
+          <p>Administrador</p>
+          <p>{{ request.user.email }}</p>
+          <hr>
+          <a href="{% url 'logout' %}" class="logout-btn">Cerrar sesión</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      {% block content %}
+
+      {% endblock %}
+    </div>
+  </div>
+
+  <!--para que salga la foto y el usuario de la cuenta ingresada en el menu desplegable-->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const avatar = document.getElementById('user-avatar');
+      const menu = document.getElementById('dropdown-menu');
+
+      avatar.addEventListener('click', function(e) {
+        menu.classList.toggle('show');
+        e.stopPropagation(); 
+      });
+
+ 
+      document.addEventListener('click', function() {
+        menu.classList.remove('show');
+      });
+    });
+  </script>
+</body>
+</html>

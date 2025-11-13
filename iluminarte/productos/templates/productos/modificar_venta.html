@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+  <div class="header-section">
+    <h2 class="page-title">Modificar Venta #{{ venta.id }}</h2>
+    <a href="{% url 'listar_ventas' %}" class="btn-morado">← Volver al listado</a>
+  </div>
+
+  <form method="POST">
+    {% csrf_token %}
+        <div class="card">
+          <table id="tablaVenta" class="tabla-productos">
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio Unitario</th>
+                <th>Subtotal</th>
+                <th>Eliminar</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="detalleVenta">
+              {% for d in detalles %}
+              <tr>
+                <td>
+                  <select name="producto_{{ forloop.counter }}" class="productoSelect">
+                    <option value="">Seleccione</option>
+                    {% for p in productos %}
+                      <option value="{{ p.id }}"
+                              data-precio="{{ p.precio_venta }}"
+                              data-stock="{{ p.stock }}"
+                              {% if p.id == d.producto.id %}selected{% endif %}>
+                        {{ p.nombre }}
+                      </option>
+                    {% endfor %}
+                  </select>
+
+                  {# Guardamos producto y cantidad original de esta fila #}
+                  <input type="hidden" class="old-producto" value="{{ d.producto.id }}">
+                  <input type="hidden" class="old-cantidad" value="{{ d.cantidad }}">
+                </td>
+
+                <td>
+                  <input type="number"
+                        name="cantidad_{{ forloop.counter }}"
+                        value="{{ d.cantidad }}"
+                        min="1"
+                        class="inp-cantidad">
+                </td>
+
+                <td class="precio">{{ d.precio_unitario }}</td>
+                <td class="subtotal">{{ d.subtotal }}</td>
+                <td><button type="button" onclick="eliminarFila(this)">🗑️</button></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+
+        <button type="button" class="btn-morado" onclick="agregarFila()">+ Agregar producto</button>
+
+        <div class="total-box">
+          <h3>Total: $<span id="totalVenta">{{ venta.total }}</span></h3>
+        </div>
+
+        <button type="submit" class="btn-azul">Guardar cambios</button>
+      
+    </div>
+  </form>
+
+
+<!--funcion de resolucion de stock -->
+<script>
+  let contador = {{ detalles|length }};
+
+  function getDisponibleParaFila(row){
+    const sel = row.querySelector('.productoSelect');
+    const opt = sel.options[sel.selectedIndex];
+    const stockActual = parseInt(opt?.dataset.stock || '0', 10);
+
+    const oldProdId = parseInt(row.querySelector('.old-producto')?.value || '0', 10);
+    const oldQty    = parseInt(row.querySelector('.old-cantidad')?.value || '0', 10);
+    const selProdId = parseInt(sel.value || '0', 10);
+
+    if (selProdId && selProdId === oldProdId){
+      return stockActual + oldQty;
+    }
+
+    return stockActual;
+  }
+
+  function actualizarPrecioYMax(row){
+    const sel = row.querySelector('.productoSelect');
+    const opt = sel.options[sel.selectedIndex];
+    const precio = parseFloat(opt?.dataset.precio || '0');
+    row.querySelector('.precio').textContent = isNaN(precio) ? '0' : precio;
+
+    const qtyInput = row.querySelector('.inp-cantidad');
+    const max = getDisponibleParaFila(row);
+    if (max > 0) qtyInput.max = max.toString(); else qtyInput.removeAttribute('max');
+
+  
+    const actual = parseInt(qtyInput.value || '0', 10);
+    if (max >= 1 && actual > max){
+      qtyInput.value = max;
+      alert(`⚠️ No puedes vender más de ${max} unidades de ${opt.text}.`);
+    }
+  }
+
+  function actualizarTotales(){
+    let total = 0;
+    document.querySelectorAll('#detalleVenta tr').forEach(row => {
+      const sel = row.querySelector('.productoSelect');
+      const qtyInput = row.querySelector('.inp-cantidad');
+
+      actualizarPrecioYMax(row);
+
+      const precio = parseFloat(row.querySelector('.precio').textContent) || 0;
+      const cantidad = parseInt(qtyInput.value || '0', 10) || 0;
+
+      const subtotal = cantidad * precio;
+      row.querySelector('.subtotal').textContent = subtotal.toFixed(2);
+      total += subtotal;
+    });
+    document.getElementById('totalVenta').textContent = total.toFixed(2);
+  }
+
+  document.querySelectorAll('#detalleVenta').forEach(tbody => {
+    tbody.addEventListener('change', e => {
+      if (e.target.classList.contains('productoSelect') || e.target.classList.contains('inp-cantidad')){
+        actualizarTotales();
+      }
+    });
+    tbody.addEventListener('input', e => {
+      if (e.target.classList.contains('inp-cantidad')){
+        actualizarTotales();
+      }
+    });
+  });
+
+  function agregarFila(){
+    contador++;
+    const tbody = document.getElementById('detalleVenta');
+    const base = tbody.rows[0];
+    const nuevaFila = base.cloneNode(true);
+
+    const sel = nuevaFila.querySelector('.productoSelect');
+    sel.name = `producto_${contador}`;
+    sel.selectedIndex = 0;
+
+    const qty = nuevaFila.querySelector('.inp-cantidad');
+    qty.name = `cantidad_${contador}`;
+    qty.value = 1;
+    qty.removeAttribute('max');
+
+    nuevaFila.querySelector('.precio').textContent = '0';
+    nuevaFila.querySelector('.subtotal').textContent = '0';
+
+    nuevaFila.querySelector('.old-producto').value = '';
+    nuevaFila.querySelector('.old-cantidad').value = '0';
+
+    tbody.appendChild(nuevaFila);
+    actualizarTotales();
+  }
+
+  function eliminarFila(btn){
+    const filas = document.querySelectorAll('#detalleVenta tr');
+    if (filas.length > 1) btn.closest('tr').remove();
+    actualizarTotales();
+  }
+
+  document.querySelectorAll('#detalleVenta tr').forEach(row => {
+    actualizarPrecioYMax(row);
+  });
+  actualizarTotales();
+</script>
+{% endblock %}

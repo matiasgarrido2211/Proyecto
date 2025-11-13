@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Listado de Ventas</h1>
+<a href="{% url 'registrar_venta' %}" class="btn-agregar">➕ Registrar venta</a>
+
+<table>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Fecha</th>
+      <th>Vendedor</th>
+      <th>Total</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for v in ventas %}
+    <tr>
+      <td>{{ v.id }}</td>
+      <td>{{ v.fecha|date:"d/m/Y " }}</td>
+      <td>{{ v.usuario.get_full_name|default:v.usuario.username }}</td>
+      <td>${{ v.total }}</td>
+      <td>
+        <a class="btn btn-modificar" href="{% url 'modificar_venta' v.id %}">modificar</a>
+        <form method="POST" action="{% url 'eliminar_venta' v.id %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-eliminar"
+                onclick="return confirm('¿Eliminar la venta #{{ v.id }}?')">Eliminar</button>
+        </form>  
+      </td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="5">No hay ventas registradas.</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
+
