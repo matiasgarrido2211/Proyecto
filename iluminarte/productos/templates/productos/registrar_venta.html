@@ -1,113 +1,149 @@
 {% extends 'base.html' %}
 {% block content %}
 
-  <h2>Registrar Venta</h2>
-  <a href="{% url 'listar_ventas' %}" class="btn-morado">← Volver al listado</a>
+<h2>Registrar Venta</h2>
+<a href="{% url 'listar_ventas' %}" class="btn-morado">← Volver al listado</a>
 
-  <form method="POST">
-    {% csrf_token %}
-    <div class="card">
-      <h3>Detalles de la venta</h3>
-      <table id="tablaVenta"> 
-        <thead>
-          <tr>
-            <th>Producto</th>
-            <th>Cantidad</th>
-            <th>Precio Unitario</th>
-            <th>Subtotal</th>
-            <th>Eliminar</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="detalleVenta">
-          <tr>
-            <td>
-              <select name="producto_1" class="productoSelect" onchange="actualizarPrecio(this)" required>
-                <option value="">Seleccione un producto</option>
-                {% for p in productos %}
-                  <option value="{{ p.id }}" data-precio="{{ p.precio_venta }}" data-stock="{{ p.stock }}">{{ p.nombre }} (Stock: {{ p.stock }})</option>
-                {% endfor %}
-              </select>
-            </td>
-            <td><input type="number" name="cantidad_1" value="1" min="1" onchange="actualizarTotales()" required></td>
-            <td class="precio">0</td>
-            <td class="subtotal">0</td>
-            <td><button type="button" onclick="eliminarFila(this)">🗑️</button></td>
-          </tr>
-        </tbody>
-      </table>
-      <br>
+<!-- 
+    El formulario de venta es dinámico, por lo que usaremos una estructura 
+    simple de formulario y confinaremos la tabla de detalles en una .card. 
+-->
+<form method="POST">
+  {% csrf_token %}
+  <div class="card">
+    <h3>Detalles de la venta</h3>
+    <table id="tablaVenta">
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Cantidad</th>
+          <th>Precio Unitario</th>
+          <th>Subtotal</th>
+          <th>Eliminar</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="detalleVenta">
+        <tr>
+          <td>
+            <select name="producto_1" class="productoSelect" onchange="actualizarPrecio(this)" required>
+              <option value="">Seleccione un producto</option>
+              {% for p in productos %}
+              <option value="{{ p.id }}" data-precio="{{ p.precio_venta }}" data-stock="{{ p.stock }}">{{ p.nombre }} (Stock: {{ p.stock }})</option>
+              {% endfor %}
+            </select>
+          </td>
+          <td><input type="number" name="cantidad_1" value="1" min="1" onchange="actualizarTotales()" required></td>
+          <td class="precio">0</td>
+          <td class="subtotal">0</td>
+          <td><button type="button" onclick="eliminarFila(this)">🗑️</button></td>
+        </tr>
+      </tbody>
+    </table>
+    <br>
 
-      <button type="button" class="btn btn-agregar" onclick="agregarFila()">+ Agregar producto</button>
+    <!-- Este botón usa el estilo btn-agregar para añadir filas, pero el grande de abajo es el submit -->
+    <button type="button" class="btn-agregar" onclick="agregarFila()">+ Agregar producto</button>
 
-      <div class="totales">
-        <h3>Total: $<span id="totalVenta">0</span></h3>
-      </div>
+    <div class="totales">
+      <h3>Total: $<span id="totalVenta">0</span></h3>
     </div>
+  </div>
 
-    <button type="submit" class="btn btn-agregar">Registrar venta</button>
-  </form>
+  <!-- Botón de submit principal, estilizado con el selector 'form > .btn-agregar' -->
+  <button type="submit" class="btn-agregar">Registrar venta</button>
+</form>
 
 <!--validaciones varias-->
 <script>
     let contador = 1;
 
+    // Función para mostrar mensajes de alerta de forma más segura (ya que alert() está prohibido)
+    function showAlert(message) {
+        // En un entorno de producción, esto se reemplazaría por un modal personalizado.
+        console.warn(message);
+        // Si no puedes usar un modal, la forma más simple de dar feedback es así:
+        const alertBox = document.createElement('div');
+        alertBox.className = 'message-alert error';
+        alertBox.style.cssText = 'position: fixed; top: 10px; right: 10px; z-index: 1000; padding: 15px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);';
+        alertBox.innerHTML = `<p>${message}</p>`;
+        document.body.appendChild(alertBox);
+        setTimeout(() => alertBox.remove(), 4000);
+    }
+
     function actualizarPrecio(select) {
-    const fila = select.closest('tr');
-    const precio = select.options[select.selectedIndex].dataset.precio || 0;
-    fila.querySelector('.precio').textContent = precio;
-    actualizarTotales();
+        const fila = select.closest('tr');
+        const precio = select.options[select.selectedIndex].dataset.precio || 0;
+        fila.querySelector('.precio').textContent = precio;
+        actualizarTotales();
     }
 
     function actualizarTotales() {
-    let total = 0;
-    document.querySelectorAll('#detalleVenta tr').forEach(fila => {
-        const cantidad = parseFloat(fila.querySelector('input').value) || 0;
-        const precio = parseFloat(fila.querySelector('.precio').textContent) || 0;
-        const subtotal = cantidad * precio;
-        fila.querySelector('.subtotal').textContent = subtotal.toFixed(2);
-        total += subtotal;
-    });
-    document.getElementById('totalVenta').textContent = total.toFixed(2);
+        let total = 0;
+        document.querySelectorAll('#detalleVenta tr').forEach(fila => {
+            const select = fila.querySelector('select');
+            const cantidadInput = fila.querySelector('input[type="number"]');
+            const precio = parseFloat(fila.querySelector('.precio').textContent) || 0;
+            let cantidad = parseFloat(cantidadInput.value) || 0;
+            
+            // Si no hay producto seleccionado, el stock es 0 (para evitar errores)
+            const stock = parseFloat(select.selectedOptions[0]?.dataset.stock || 0);
+
+            // Validación de stock
+            if (stock > 0 && cantidad > stock) {
+                cantidad = stock;
+                cantidadInput.value = stock;
+                const productName = select.selectedOptions[0]?.text.split('(')[0].trim() || 'este producto';
+                showAlert(`⚠️ No puedes vender más de ${stock} unidades de ${productName}.`);
+            }
+            if (cantidad < 1) {
+                cantidad = 1;
+                cantidadInput.value = 1;
+            }
+
+
+            const subtotal = cantidad * precio;
+            fila.querySelector('.subtotal').textContent = subtotal.toFixed(2);
+            total += subtotal;
+        });
+        document.getElementById('totalVenta').textContent = total.toFixed(2);
     }
 
     function agregarFila() {
-    contador++;
-    const tbody = document.getElementById('detalleVenta');
-    const filaNueva = tbody.rows[0].cloneNode(true);
-    filaNueva.querySelector('select').name = `producto_${contador}`;
-    filaNueva.querySelector('input').name = `cantidad_${contador}`;
-    filaNueva.querySelector('.precio').textContent = '0';
-    filaNueva.querySelector('.subtotal').textContent = '0';
-    tbody.appendChild(filaNueva);
+        contador++;
+        const tbody = document.getElementById('detalleVenta');
+        
+        // Crear una nueva fila clonando la primera
+        const filaNueva = tbody.rows[0].cloneNode(true);
+        
+        // Resetear y actualizar nombres de los elementos
+        const select = filaNueva.querySelector('select');
+        select.name = `producto_${contador}`;
+        select.value = ""; // Limpiar selección
+
+        const input = filaNueva.querySelector('input[type="number"]');
+        input.name = `cantidad_${contador}`;
+        input.value = "1"; // Valor inicial 1
+
+        filaNueva.querySelector('.precio').textContent = '0';
+        filaNueva.querySelector('.subtotal').textContent = '0';
+        
+        tbody.appendChild(filaNueva);
+        actualizarTotales();
     }
 
     function eliminarFila(btn) {
-    const filas = document.querySelectorAll('#detalleVenta tr');
-    if (filas.length > 1) btn.closest('tr').remove();
-    actualizarTotales();
-    }
-    
-    function actualizarTotales() {
-    let total = 0;
-    document.querySelectorAll('#detalleVenta tr').forEach(fila => {
-        const select = fila.querySelector('select');
-        const cantidadInput = fila.querySelector('input[type="number"]');
-        const precio = parseFloat(fila.querySelector('.precio').textContent) || 0;
-        const cantidad = parseFloat(cantidadInput.value) || 0;
-        const stock = parseFloat(select.selectedOptions[0]?.dataset.stock || 0);
-
-        if (cantidad > stock) {
-        cantidadInput.value = stock;
-        alert(`⚠️ No puedes vender más de ${stock} unidades de ${select.selectedOptions[0].text}.`);
+        const filas = document.querySelectorAll('#detalleVenta tr');
+        if (filas.length > 1) {
+            btn.closest('tr').remove();
+        } else {
+             showAlert("No puedes eliminar la última línea de detalle. Debes registrar al menos un producto.");
         }
-
-        const subtotal = cantidad * precio;
-        fila.querySelector('.subtotal').textContent = subtotal.toFixed(2);
-        total += subtotal;
-    });
-    document.getElementById('totalVenta').textContent = total.toFixed(2);
+        actualizarTotales();
     }
     
+    // Inicializar totales al cargar la página
+    document.addEventListener('DOMContentLoaded', actualizarTotales);
+
 </script>
 {% endblock %}

@@ -4,52 +4,85 @@
 {% block content %}
 <h1>Agregar nuevo producto</h1>
 
+<!-- Utiliza la clase 'form-container' para el diseño de dos columnas (imagen y campos) -->
 <div class="form-container">
 
-  <div class="image-preview">
-    <img id="preview" src="{% static 'productos/placeholder.png' %}" alt="Vista previa de la imagen">
-  </div>
+    <!-- Columna Izquierda: Vista previa de la imagen -->
+    <!-- Mantenemos el tamaño 300x300px del CSS global -->
+    <div class="image-preview">
+        <!-- El placeholder.png debe existir en tu carpeta static/productos/ -->
+        <img id="preview" src="{% static 'productos/placeholder.png' %}" alt="Vista previa de la imagen">
+    </div>
 
+    <!-- Columna Derecha: Campos del formulario -->
+    <div class="form-fields">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <!-- Título de la sección de detalles -->
+            <h3 style="margin-bottom: 20px; color: #4B0082;">Detalles del producto</h3>
 
-  <div class="form-fields">
-    <form method="POST" enctype="multipart/form-data">
-      {% csrf_token %}
-      <label for="codigo">Código:</label>
-      <input type="text" name="codigo" required>
+            <!-- Contenedor de grilla para los campos 2xN -->
+            <div class="form-grid-2">
+                <!-- Fila 1 -->
+                <div>
+                    <label for="codigo">Código:</label>
+                    <input type="text" name="codigo" required>
+                </div>
+                <!-- Fila 2 -->
+                <div>
+                    <label for="nombre">Nombre:</label>
+                    <input type="text" name="nombre" required>
+                </div>
+                <!-- Simulo el campo "Presentación" -->
+            </div>
 
-      <label for="nombre">Nombre:</label>
-      <input type="text" name="nombre" required>
+            <!-- Fila 4: Fabricante y Estado (de vuelta a la grilla de 2) -->
+            <div class="form-grid-2">
 
-      <label for="precio_venta">Precio de venta:</label>
-      <input type="number" step="0.01" name="precio_venta" required>
+                <!-- Fila 5: Costo y Utilidad (grilla de 2) -->
+                <div style="display: flex">
+                    <label for="costo">Costo:</label>
+                    <input type="number" step="0.01" name="costo" required style="flex-grow: 0;">
+                </div>
 
-      <label for="costo">Costo:</label>
-      <input type="number" step="0.01" name="costo" required>
+                <!-- Fila 6: Precio de venta y Stock -->
+                <div style="display: flex">
+                    <label for="precio_venta">Precio de venta:</label>
+                    <input type="number" step="0.01" name="precio_venta" required style="flex-grow: 1;">
+                </div>
+                <div>
+                    <label for="stock">Stock:</label>
+                    <input type="number" name="stock" required>
+                </div>
+            </div>
+            
+            <!-- Fila 7: Imagen (control de archivo) -->
+            <label for="foto" style="margin-top: 20px;">Imagen:</label>
+            <input type="file" name="foto" id="foto" accept="image/*" onchange="previewImage(event)" style="margin-bottom: 20px;">
 
-      <label for="stock">Stock:</label>
-      <input type="number" name="stock" required>
-
-      <label for="foto">Imagen:</label>
-      <input type="file" name="foto" id="foto" accept="image/*" onchange="previewImage(event)">
-
-      <button type="submit">Guardar producto</button>
-      <a href="{% url 'productos_list' %}" class="back-link">← Volver al listado</a>
-    </form>
-  </div>
+            <!-- Botón de guardar y volver -->
+            <button type="submit">Guardar datos</button>
+            <a href="{% url 'productos_list' %}" class="back-link">← Volver al listado</a>
+        </form>
+    </div>
 </div>
 
-<!--muestra la imagen previsualizada-->
+<!-- Muestra la imagen previsualizada -->
 <script>
-  function previewImage(event) {
-    const file = event.target.files[0];
-    const preview = document.getElementById('preview');
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = e => preview.src = e.target.result;
-      reader.readAsDataURL(file);
-    } else {
-      preview.src = "{% static 'productos/placeholder.png' %}";
+    function previewImage(event) {
+        const file = event.target.files[0];
+        const preview = document.getElementById('preview');
+        // Asegúrate de que la ruta estática es correcta
+        const defaultPlaceholder = "{% static 'productos/placeholder.png' %}"; 
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = e => preview.src = e.target.result;
+            reader.readAsDataURL(file);
+        } else {
+            preview.src = defaultPlaceholder;
+        }
     }
-  }
 </script>
 {% endblock %}

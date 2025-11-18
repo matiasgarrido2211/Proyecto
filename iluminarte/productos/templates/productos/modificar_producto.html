@@ -4,53 +4,81 @@
 {% block content %}
 <h1>Modificar Producto</h1>
 
+<!-- Utiliza la clase 'form-container' para el diseño de dos columnas (imagen y campos) -->
 <div class="form-container">
-  <div class="image-preview">
-    {% if producto.foto %}
-      <img id="preview" src="{{ producto.foto.url }}" alt="Foto actual del producto">
-    {% else %}
-      <img id="preview" src="{% static 'productos/placeholder.png' %}" alt="Sin imagen">
-    {% endif %}
-  </div>
+    
+    <!-- Columna Izquierda: Vista previa de la imagen (Muestra la foto actual o placeholder) -->
+    <div class="image-preview">
+        {% if producto.foto %}
+            <img id="preview" src="{{ producto.foto.url }}" alt="Foto actual del producto">
+        {% else %}
+            <!-- El placeholder.png debe existir en tu carpeta static/productos/ -->
+            <img id="preview" src="{% static 'productos/placeholder.png' %}" alt="Sin imagen">
+        {% endif %}
+    </div>
 
-  <div class="form-fields">
-    <form method="POST" enctype="multipart/form-data">
-      {% csrf_token %}
+    <!-- Columna Derecha: Campos del formulario -->
+    <div class="form-fields">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <!-- Título de la sección de detalles -->
+            <h3 style="margin-bottom: 20px; color: #4B0082;">Detalles del producto</h3>
 
-      <label for="codigo">Código:</label>
-      <input type="text" name="codigo" value="{{ producto.codigo }}" required>
+            <!-- Contenedor de grilla para los campos 2xN -->
+            <div class="form-grid-2">
+                <!-- Fila 1: Código -->
+                <div>
+                    <label for="codigo">Código:</label>
+                    <input type="text" name="codigo" value="{{ producto.codigo }}" required>
+                </div>
 
-      <label for="nombre">Nombre:</label>
-      <input type="text" name="nombre" value="{{ producto.nombre }}" required>
+                <!-- Fila 2: Nombre y Presentación -->
+                <div>
+                    <label for="nombre">Nombre:</label>
+                    <input type="text" name="nombre" value="{{ producto.nombre }}" required>
+                </div>
+            </div>
 
-      <label for="precio_venta">Precio de venta:</label>
-      <input type="number" step="0.01" name="precio_venta" value="{{ producto.precio_venta }}" required>
+            <!-- Fila 5: Costo y Utilidad (grilla de 2) -->
+            <div class="form-grid-2">
+                <div style="display: flex">
+                    <label for="costo">Costo:</label>
+                    <input type="number" step="0.01" name="costo" value="{{ producto.costo }}" required style="flex-grow: 0;">
+                </div>
+                <!-- Fila 6: Precio de venta y Stock -->
+                <div style="display: flex">
+                    <label for="precio_venta">Precio de venta:</label>
+                    <input type="number" step="0.01" name="precio_venta" value="{{ producto.precio_venta }}" required style="flex-grow: 1;">
+                </div>
+                <div>
+                    <label for="stock">Stock:</label>
+                    <input type="number" name="stock" value="{{ producto.stock }}" required>
+                </div>
+            </div>
+            
+            <!-- Fila 7: Imagen (control de archivo) -->
+            <label for="foto" style="margin-top: 20px;">Cambiar imagen:</label>
+            <input type="file" name="foto" id="foto" accept="image/*" onchange="previewImage(event)" style="margin-bottom: 20px;">
 
-      <label for="costo">Costo:</label>
-      <input type="number" step="0.01" name="costo" value="{{ producto.costo }}" required>
-
-      <label for="stock">Stock:</label>
-      <input type="number" name="stock" value="{{ producto.stock }}" required>
-
-      <label for="foto">Cambiar imagen:</label>
-      <input type="file" name="foto" id="foto" accept="image/*" onchange="previewImage(event)">
-
-      <button type="submit">Actualizar producto</button>
-      <a href="{% url 'productos_list' %}" class="back-link">← Volver al listado</a>
-    </form>
-  </div>
+            <!-- Botones -->
+            <button type="submit">Actualizar producto</button>
+            <a href="{% url 'productos_list' %}" class="back-link">← Volver al listado</a>
+        </form>
+    </div>
 </div>
 
-<!--lo mismo quee en el agregar producto pero la imagen ingresada es la previsualizada-->
+<!-- Script para previsualizar la nueva imagen sin recargar -->
 <script>
-  function previewImage(event) {
-    const file = event.target.files[0];
-    const preview = document.getElementById('preview');
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = e => preview.src = e.target.result;
-      reader.readAsDataURL(file);
+    function previewImage(event) {
+        const file = event.target.files[0];
+        const preview = document.getElementById('preview');
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = e => preview.src = e.target.result;
+            reader.readAsDataURL(file);
+        }
+        // Nota: Si el usuario elimina la selección de archivo, la imagen actual sigue visible, lo cual es el comportamiento esperado en 'Modificar'.
     }
-  }
 </script>
 {% endblock %}
