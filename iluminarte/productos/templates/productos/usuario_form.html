@@ -1,37 +1,71 @@
 {% extends 'base.html' %}
 {% block content %}
 
-  <h1>{{ titulo }}</h1>
+<h1>{{ titulo }}</h1>
 
-  <form method="post">
-    {% csrf_token %}
+<div style="max-width: 700px; margin: 0 auto;">
+  <div class="form-fields">
+    <form method="post">
+      {% csrf_token %}
 
-    <!--Campos que vengan del form-->
-    {% for field in form %}
-      <label>{{ field.label }}</label>
-      {{ field }}
-      {% if field.errors %}
-        <div class="error">{{ field.errors|striptags }}</div>
+      <h3 style="margin-bottom: 20px; color: #4B0082;">Datos del usuario</h3>
+
+      {# Campos del form (sirve tanto para crear como para editar) #}
+      {% for field in form %}
+        <div class="form-row {% if field.field.widget.input_type == 'checkbox' %}checkbox-row{% endif %}">
+          
+          {# Si es checkbox, metemos el input dentro del label #}
+          {% if field.field.widget.input_type == 'checkbox' %}
+            <label>
+              {{ field }} {{ field.label }}
+            </label>
+          {% else %}
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+          {% endif %}
+
+          {% if field.errors %}
+            <div class="error">{{ field.errors|striptags }}</div>
+          {% endif %}
+        </div>
+      {% endfor %}
+
+      {# Campos extra sólo en creación #}
+      {% if es_creacion %}
+        <div class="form-row">
+          <label for="first_name">Nombre</label>
+          <input type="text" name="first_name" id="first_name">
+        </div>
+
+        <div class="form-row">
+          <label for="last_name">Apellido</label>
+          <input type="text" name="last_name" id="last_name">
+        </div>
+
+        <div class="form-row">
+          <label for="email">Email</label>
+          <input type="email" name="email" id="email">
+        </div>
+
+        <div class="form-row checkbox-row">
+          <label>
+            <input type="checkbox" name="is_staff">
+            ¿Staff?
+          </label>
+        </div>
+
+        <div class="form-row checkbox-row">
+          <label>
+            <input type="checkbox" name="is_active" checked>
+            ¿Activo?
+          </label>
+        </div>
       {% endif %}
-    {% endfor %}
 
-    <!--En creación, agregamos manualmente los campos extra-->
-    {% if es_creacion %}
-      <label>Nombre</label>
-      <input type="text" name="first_name">
-      
-
-      <label>Apellido</label>
-      <input type="text" name="last_name">
-
-      <label>Email</label>
-      <input type="email" name="email">
-
-      <label><input type="checkbox" name="is_staff"> ¿Staff?</label>
-      <label><input type="checkbox" name="is_active" checked> ¿Activo?</label>
-    {% endif %}
-
-    <button type="submit">Guardar</button>
-  </form>
+      <button type="submit">Guardar</button>
+      <a href="{% url 'usuarios_list' %}" class="btn-morado">← Volver al listado</a>
+    </form>
+  </div>
+</div>
 
 {% endblock %}

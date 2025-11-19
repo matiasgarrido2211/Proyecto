@@ -22,7 +22,7 @@
       <td>{{ v.usuario.get_full_name|default:v.usuario.username }}</td>
       <td>${{ v.total }}</td>
       <td>
-        <a class="btn btn-modificar" href="{% url 'modificar_venta' v.id %}">modificar</a>
+        <a class="btn btn-modificar" href="{% url 'modificar_venta' v.id %}">Detalle</a>
         <form method="POST" action="{% url 'eliminar_venta' v.id %}" style="display:inline;">
             {% csrf_token %}
             <button type="submit" class="btn btn-eliminar"
