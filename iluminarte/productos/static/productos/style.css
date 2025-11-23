@@ -1,8 +1,3 @@
-/* -----------------------------------------------
-   Archivo: productos/static/productos/style.css
-   Estilos para el Panel de Administración - Tema Morado Claro
-   ----------------------------------------------- */
-
 /* --- Paleta de colores morados ---
    #F0F8FF - Alice Blue (fondo muy claro)
    #E6E6FA - Lavender (fondo del container)
@@ -38,8 +33,8 @@ a {
    ----------------------------------------------- */
 .sidebar {
     width: 240px;
-    background-color: #4B0082; /* Indigo - morado oscuro para el sidebar */
-    color: #ffffff; /* Texto blanco */
+    background-color: #4B0082; 
+    color: #ffffff; 
     height: 100vh;
     position: fixed;
     top: 0;
@@ -61,15 +56,15 @@ a {
     display: block;
     padding: 15px 25px;
     font-size: 1.1rem;
-    color: #DDA0DD; /* Plum - un morado claro para enlaces */
+    color: #DDA0DD; 
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .sidebar a:hover,
 .sidebar a.active {
-    background-color: #8A2BE2; /* BlueViolet - morado más vibrante al pasar el ratón */
+    background-color: #8A2BE2; 
     color: #ffffff;
-    border-left: 3px solid #BA55D3; /* MediumOrchid - indicador de color */
+    border-left: 3px solid #BA55D3; 
     padding-left: 22px;
 }
 
@@ -191,15 +186,15 @@ a {
 .container {
     padding: 30px;
     flex-grow: 1;
-    background-color: #E6E6FA; /* Lavender - fondo del contenido */
+    background-color: #E6E6FA; 
 }
 
 /* Estilo del título principal del Dashboard */
 .container h1 {
     font-size: 2rem;
-    color: #4B0082; /* Indigo */
+    color: #4B0082; 
     margin-top: 0;
-    margin-bottom: 20px; /* Reducido para listados */
+    margin-bottom: 20px; 
     font-weight: 700;
 }
 
@@ -217,7 +212,7 @@ a {
 .card h3 {
     margin-top: 0;
     margin-bottom: 15px;
-    color: #4B0082; /* Indigo */
+    color: #4B0082; 
     font-weight: 600;
     font-size: 1.25rem;
 }
@@ -237,7 +232,7 @@ a {
     padding: 20px;
     border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-    border-left: 5px solid #9370DB; /* Borde de acento morado */
+    border-left: 5px solid #9370DB; 
     transition: transform 0.3s ease;
 }
 
@@ -248,7 +243,7 @@ a {
 
 .kpi-title {
     font-size: 1rem;
-    color: #6a5acd; /* SlateBlue */
+    color: #6a5acd; 
     margin-bottom: 5px;
     font-weight: 500;
 }
@@ -256,7 +251,7 @@ a {
 .kpi-value {
     font-size: 2.2rem;
     font-weight: 700;
-    color: #4B0082; /* Indigo - valor principal */
+    color: #4B0082; 
     margin-bottom: 5px;
 }
 
@@ -298,8 +293,8 @@ a {
 }
 
 .card thead th {
-    background-color: #E6E6FA; /* Lavender - fondo de encabezado */
-    color: #4B0082; /* Indigo */
+    background-color: #E6E6FA; 
+    color: #4B0082; 
     font-weight: 600;
     text-transform: uppercase;
     font-size: 0.8rem;
@@ -307,7 +302,7 @@ a {
 }
 
 .card tbody tr:hover {
-    background-color: #f9f9ff; /* Morado muy claro al pasar el ratón */
+    background-color: #f9f9ff; 
 }
 
 /* -----------------------------------------------
@@ -315,7 +310,7 @@ a {
    ----------------------------------------------- */
 .card ul {
     list-style: disc;
-    color: #4B0082; /* Morado para el texto */
+    color: #4B0082; 
 }
 
 .card ul li {
@@ -327,16 +322,14 @@ a {
    ESTILOS DE INICIO DE SESIÓN (LOGIN) (mantener)
    =============================================== */
 
-/* Asegura que el body de la página de login ocupe toda la pantalla y esté centrado */
+
 body.login-body {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    /* Usar un color de fondo morado suave o un degradado para el tema */
-    background: linear-gradient(135deg, #E6E6FA 0%, #DDA0DD 100%); /* Lavender a Plum */
-    flex-direction: column; /* Asegura que el contenido se apile si es necesario */
-    /* Reseteamos los estilos de body global que interfieren con esta vista */
+    background: linear-gradient(135deg, #E6E6FA 0%, #DDA0DD 100%); 
+    flex-direction: column; 
     margin-left: 0;
     overflow-y: hidden;
 }
@@ -354,7 +347,7 @@ body.login-body {
 
 /* Logo */
 .login-logo {
-    width: 80px; /* Tamaño más manejable para un logo */
+    width: 80px; 
     height: auto;
     margin-bottom: 20px;
 }
@@ -363,7 +356,7 @@ body.login-body {
 .login-box h1 {
     font-size: 1.8rem;
     margin-bottom: 30px;
-    color: #4B0082; /* Indigo */
+    color: #4B0082; 
 }
 
 /* Formulario */
@@ -378,23 +371,23 @@ body.login-body {
 .login-box input[type="password"] {
     width: 100%;
     padding: 12px;
-    border: 2px solid #DDA0DD; /* Plum */
+    border: 2px solid #DDA0DD; 
     border-radius: 8px;
     font-size: 1rem;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    box-sizing: border-box; /* Incluir padding en el width */
+    box-sizing: border-box; 
 }
 
 .login-box input[type="text"]:focus,
 .login-box input[type="password"]:focus {
-    border-color: #9370DB; /* MediumPurple */
+    border-color: #9370DB; 
     outline: none;
-    box-shadow: 0 0 0 3px rgba(147, 112, 219, 0.3); /* Sombra de enfoque sutil */
+    box-shadow: 0 0 0 3px rgba(147, 112, 219, 0.3); 
 }
 
 /* Botón de Ingresar */
 .login-box button[type="submit"] {
-    background-color: #9370DB; /* MediumPurple - Botón de acento */
+    background-color: #9370DB; 
     color: white;
     padding: 12px;
     border: none;
@@ -407,7 +400,7 @@ body.login-body {
 }
 
 .login-box button[type="submit"]:hover {
-    background-color: #8A2BE2; /* BlueViolet - Hover más oscuro */
+    background-color: #8A2BE2; 
 }
 
 .login-box button[type="submit"]:active {
@@ -428,14 +421,14 @@ body.login-body {
 }
 
 .error {
-    background-color: #fce4e4; /* Rojo claro */
-    color: #c62828; /* Rojo oscuro */
+    background-color: #fce4e4; 
+    color: #c62828; 
     border: 1px solid #c62828;
 }
 
 .success-msg {
-    background-color: #e8f5e9; /* Verde claro */
-    color: #2e7d32; /* Verde oscuro */
+    background-color: #e8f5e9; 
+    color: #2e7d32; 
     border: 1px solid #2e7d32;
 }
 
@@ -455,7 +448,7 @@ body.login-body {
     display: inline-block;
     padding: 10px 18px;
     margin-bottom: 20px;
-    background-color: #9370DB; /* MediumPurple */
+    background-color: #9370DB; 
     color: white;
     border-radius: 8px;
     font-weight: 600;
@@ -467,7 +460,7 @@ body.login-body {
 }
 
 .btn-agregar:hover {
-    background-color: #8A2BE2; /* BlueViolet */
+    background-color: #8A2BE2; 
 }
 
 /* Tabla de listado principal (fuera de .card) */
@@ -476,7 +469,7 @@ body.login-body {
     border-collapse: collapse;
     background-color: #ffffff;
     border-radius: 12px;
-    overflow: hidden; /* Para que los bordes redondeados funcionen con thead */
+    overflow: hidden; 
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
@@ -488,8 +481,8 @@ body.login-body {
 }
 
 .container thead th {
-    background-color: #E6E6FA; /* Lavender */
-    color: #4B0082; /* Indigo */
+    background-color: #E6E6FA; 
+    color: #4B0082; 
     font-weight: 700;
     text-transform: uppercase;
     font-size: 0.85rem;
@@ -507,12 +500,12 @@ body.login-body {
     border-radius: 6px;
     object-fit: cover;
     vertical-align: middle;
-    border: 1px solid #DDA0DD; /* Plum */
+    border: 1px solid #DDA0DD; 
 }
 
 /* Columna de acciones (centrar y espacio) */
 .container td:last-child {
-    white-space: nowrap; /* Evita que los botones se envuelvan */
+    white-space: nowrap; 
     text-align:justify
 }
 
@@ -527,14 +520,14 @@ body.login-body {
 }
 
 .estado-activo {
-    background-color: #e8f5e9; /* Green/Light Success */
-    color: #2e7d32; /* Dark Green */
+    background-color: #e8f5e9; 
+    color: #2e7d32; 
     border: 1px solid #a5d6a7;
 }
 
 .estado-inactivo {
-    background-color: #fce4e4; /* Red/Light Error */
-    color: #c62828; /* Dark Red */
+    background-color: #fce4e4; 
+    color: #c62828; 
     border: 1px solid #ef9a9a;
 }
 
@@ -554,16 +547,16 @@ body.login-body {
 }
 
 .btn-modificar {
-    background-color: #BA55D3; /* MediumOrchid */
+    background-color: #BA55D3; 
     color: white;
 }
 
 .btn-modificar:hover {
-    background-color: #9370DB; /* MediumPurple */
+    background-color: #9370DB; 
 }
 
 .btn-eliminar {
-    background-color: #FF6347; /* Tomato (Rojo de logout, para peligro) */
+    background-color: #FF6347; 
     color: white;
 }
 
@@ -575,7 +568,6 @@ body.login-body {
    ESTILOS DE FORMULARIOS GENERALES (AGREGAR/MODIFICAR)
    =============================================== */
 
-/* Contenedor principal para el formulario de Agregar Producto (que tiene dos columnas) */
 .form-container {
     display: flex;
     gap: 30px;
@@ -588,38 +580,38 @@ body.login-body {
     }
 }
 
-/* Estilos para el formulario dentro de form-fields */
+
 .form-fields form {
     display: flex;
     flex-direction: column;
-    gap: 10px; /* Espacio entre campos y etiquetas */
-    background-color: #ffffff; /* Fondo blanco */
+    gap: 10px; 
+    background-color: #ffffff; 
     padding: 25px;
     border-radius: 12px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
 .form-fields {
-    flex-grow: 1; /* Ocupa el espacio restante en el form-container */
+    flex-grow: 1; 
 }
 
-/* Etiquetas (Labels) */
+/* Labels */
 .form-fields label {
     font-weight: 600;
-    color: #4B0082; /* Indigo */
+    color: #4B0082; 
     margin-top: 10px;
     margin-bottom: 5px;
     display: block;
     font-size: 0.95rem;
 }
 
-/* Inputs, Selects, y Textareas (Campos de entrada estándar) */
+/* Campos de entrada */
 .form-fields input:not([type="checkbox"]):not([type="radio"]):not([type="file"]), 
 .form-fields select, 
 .form-fields textarea {
     width: 100%;
     padding: 10px;
-    border: 1px solid #DDA0DD; /* Plum */
+    border: 1px solid #DDA0DD; 
     border-radius: 6px;
     font-size: 1rem;
     box-sizing: border-box;
@@ -629,14 +621,14 @@ body.login-body {
 .form-fields input:focus, 
 .form-fields select:focus, 
 .form-fields textarea:focus {
-    border-color: #9370DB; /* MediumPurple */
+    border-color: #9370DB; 
     outline: none;
     box-shadow: 0 0 0 2px rgba(147, 112, 219, 0.2);
 }
 
 /* Botón principal de guardar */
 .form-fields button[type="submit"] {
-    background-color: #9370DB; /* MediumPurple */
+    background-color: #9370DB; 
     color: white;
     padding: 12px;
     border: none;
@@ -649,7 +641,7 @@ body.login-body {
 }
 
 .form-fields button[type="submit"]:hover {
-    background-color: #8A2BE2; /* BlueViolet */
+    background-color: #8A2BE2; 
 }
 
 /* Link de volver */
@@ -657,24 +649,24 @@ body.login-body {
     display: block;
     text-align: center;
     margin-top: 15px;
-    color: #6a5acd; /* SlateBlue */
+    color: #6a5acd; 
     font-size: 0.9rem;
     transition: color 0.2s ease;
 }
 
 .back-link:hover {
-    color: #4B0082; /* Indigo */
+    color: #4B0082; 
 }
 
 /* Estilos específicos para la vista previa de imagen */
 .image-preview {
-    width: 300px; /* Ancho fijo para la vista previa */
+    width: 300px; 
     height: 300px;
     border: 3px solid #DDA0DD;
     border-radius: 12px;
     overflow: hidden;
     flex-shrink: 0;
-    align-self: flex-start; /* Se alinea en la parte superior del form-container */
+    align-self: flex-start; 
 }
 
 .image-preview img {
@@ -684,17 +676,14 @@ body.login-body {
     display: block;
 }
 
-/* --- NUEVO: Estilo de grilla para formularios de 2 columnas --- */
 .form-grid-2 {
     display: grid;
-    /* Dos columnas con ancho automático igual */
     grid-template-columns: 1fr 1fr; 
-    gap: 15px 30px; /* Espacio vertical y horizontal */
+    gap: 15px 30px; 
     margin-top: 10px;
     margin-bottom: 10px;
 }
 
-/* Asegura que los campos dentro de la grilla ocupen todo el ancho de su celda */
 .form-grid-2 > div {
     display: flex;
     flex-direction: column;
@@ -705,7 +694,6 @@ body.login-body {
 }
 
 @media (max-width: 900px) {
-    /* En pantallas medianas, la grilla de campos se vuelve de 1 columna */
     .form-grid-2 {
         grid-template-columns: 1fr;
         gap: 15px;
@@ -722,7 +710,7 @@ body.login-body {
     display: inline-block;
     padding: 8px 15px;
     margin-bottom: 25px;
-    background-color: #BA55D3; /* MediumOrchid */
+    background-color: #BA55D3; 
     color: white;
     border-radius: 6px;
     font-weight: 500;
@@ -731,7 +719,7 @@ body.login-body {
 }
 
 .btn-morado:hover {
-    background-color: #9370DB; /* MediumPurple */
+    background-color: #9370DB; 
 }
 
 /* El botón grande "Registrar venta" al final del formulario */
@@ -742,11 +730,10 @@ form > .btn-agregar {
     text-align: center;
     padding: 15px 18px;
     font-size: 1.2rem;
-    border: none; /* Asegurar que no tenga borde si es un botón */
+    border: none; 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-/* Estilos específicos para la tabla de detalle de venta */
 #tablaVenta {
     width: 100%;
     border-collapse: collapse;
@@ -755,12 +742,12 @@ form > .btn-agregar {
 
 #tablaVenta th, #tablaVenta td {
     padding: 10px;
-    border: 1px solid #f0f0f0; /* Borde interno más suave */
+    border: 1px solid #f0f0f0; 
     text-align: center;
 }
 
 #tablaVenta thead th {
-    background-color: #F8F8FF; /* GhostWhite */
+    background-color: #F8F8FF; 
     color: #4B0082;
     font-weight: 600;
     font-size: 0.8rem;
@@ -776,7 +763,7 @@ form > .btn-agregar {
 }
 
 #tablaVenta input[type="number"] {
-    width: 60px; /* Ancho más pequeño para la cantidad */
+    width: 60px; 
     padding: 8px;
     text-align: center;
     border: 1px solid #DDA0DD;
@@ -790,7 +777,7 @@ form > .btn-agregar {
     border: none;
     cursor: pointer;
     font-size: 1.2rem;
-    color: #FF6347; /* Rojo */
+    color: #FF6347; 
     transition: transform 0.1s ease;
 }
 
@@ -814,7 +801,7 @@ form > .btn-agregar {
 
 .totales #totalVenta {
     font-weight: 700;
-    color: #9370DB; /* MediumPurple */
+    color: #9370DB; 
 }
 
 
